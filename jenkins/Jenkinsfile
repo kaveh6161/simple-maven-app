@@ -1,22 +1,7 @@
 pipeline {
     agent {
         kubernetes {
-            label 'maven-pod'
-            yaml """
-apiVersion: v1
-kind: Pod
-metadata:
-  labels:
-    app: maven
-spec:
-  containers:
-  - name: maven
-    image: maven:3.9.1-eclipse-temurin-11
-    command:
-    - cat
-    tty: true
-  restartPolicy: Never
-            """
+            yamlFile 'maven-agent.yaml'
         }
     }
     stages {
