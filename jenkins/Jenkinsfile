@@ -19,7 +19,7 @@ pipeline {
             steps {
                 container ('maven') {
                     sh 'mvn test'
-                    script { withSonarQubeEnv( installationName: 'sonar-romas') { // You can override the credential to be used
+                    script { withSonarQubeEnv( installationName: 'sonar-1') { // You can override the credential to be used
                             sh 'mvn clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar -Dsonar.qualitygate.wait=true'
                             }
                     }
