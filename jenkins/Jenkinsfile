@@ -25,13 +25,13 @@ pipeline {
                     }
                 }
             }
-//             post {
-//                 always {
-//                     container ('maven') {
-//                         junit 'target/surefire-reports/*.xml'
-//                     }
-//                 }
-//             }
+            post {
+                always {
+                    container ('maven') {
+                        junit 'target/surefire-reports/*.xml'
+                    }
+                }
+            }
         }
         stage('Quality Gate Check') {
             steps {
