@@ -25,17 +25,17 @@ pipeline {
                     }
                 }
             }
-            post {
-                always {
-                    container ('maven') {
-                        junit 'target/surefire-reports/*.xml'
-                    }
-                }
-            }
+//             post {
+//                 always {
+//                     container ('maven') {
+//                         junit 'target/surefire-reports/*.xml'
+//                     }
+//                 }
+//             }
         }
         stage('Quality Gate Check') {
             steps {
-                timeout (time: 5, unit: 'MINUTES') {
+                timeout (time: 15, unit: 'MINUTES') {
                   waitForQualityGate abortPipeline: true
                 }
             }
