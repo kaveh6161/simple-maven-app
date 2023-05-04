@@ -1,7 +1,22 @@
 pipeline {
     agent {
-        docker {
-            image 'maven:3.9.0'
+        kubernetes {
+            label 'maven-pod'
+            yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    app: maven
+spec:
+  containers:
+  - name: maven
+    image: maven:3.8.1-openjdk-11
+    command:
+    - cat
+    tty: true
+  restartPolicy: Never
+            """
         }
     }
     stages {
@@ -13,8 +28,8 @@ pipeline {
         stage('Test') {
             steps {
                 sh 'mvn test'
-                script { withSonarQubeEnv( installationName: 'MySonarQube') { // You can override the credential to be used
-                        sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar'
+                script { withSonarQubeEnv( installationName: 'sonar-1') { // You can override the credential to be used
+                        sh 'mvn clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.1.2184:sonar'
                         }
                 }
             }
@@ -24,10 +39,11 @@ pipeline {
                 }
             }
         }
-        // stage('Deliver') {
-        //     steps {
-        //         sh './jenkins/scripts/deliver.sh'
-        //     }
-        // }
+        stage('Quality Gate Check') {
+            steps {
+                timeout (time: 3, unit: 'MINUTES')
+                  waitForQualityGate abortPipeline: true
+            }
+        }
     }
 }
